@@ -2,10 +2,9 @@
 interface File_Contents
 {
     public function readFile();
-    public function __construct($type, $name);
 }
 
-abstract class File
+abstract class File implements File_Contents
 {
     protected $type;
     protected $name;
@@ -26,7 +25,7 @@ abstract class File
     }
 }
 
-class CSS_File extends File implements File_Contents
+class CSS_File extends File
 {
     public function __construct($type, $name)
     {
@@ -35,7 +34,7 @@ class CSS_File extends File implements File_Contents
     }
 }
 
-class TXT_File extends File implements File_Contents
+class TXT_File extends File
 {
     public function __construct($type, $name)
     {
@@ -44,7 +43,7 @@ class TXT_File extends File implements File_Contents
     }
 }
 
-class PHP_File extends File implements File_Contents
+class PHP_File extends File
 {
     public function __construct($type, $name)
     {
@@ -60,19 +59,14 @@ class ReadFileFactory
     {
         switch ($type) {
             case 'css':
-                $obj = new CSS_File($type, $name);
-                $obj->readFile();
-                break;
+                return new CSS_File($type, $name);
             case 'txt':
-                $obj = new TXT_File($type, $name);
-                $obj->readFile();
-                break;
+                return new TXT_File($type, $name);
             case 'php':
-                $obj = new PHP_File($type, $name);
-                $obj->readFile();
-                break;
+                return new PHP_File($type, $name);
         }
     }
 }
 
-ReadFileFactory::createFileContent($argv[1], $argv[2]);
+$obj = ReadFileFactory::createFileContent($argv[1], $argv[2]);
+$obj->readFile();
