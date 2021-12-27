@@ -1,0 +1,34 @@
+27.12.21
+Elasticsearch error :
+    bin/magento indexer:reindex выдает ошибку :
+        ElasticSuite Category Indexing indexer process unknown error:
+        No alive nodes found in your cluster / Could not ping search engine: No alive nodes found in your cluster
+Решение :
+    В админке Stores > Settings > Configuration > Catalog > Catalog > Catalog Search
+    1)Search Engine = Elasticsearch 7.0+
+        Elasticsearch Server Hostname = elasticsearch
+    2)Search Engine = ElasticSuite
+        Save Config
+    3)bin/magento config:set -le smile_elasticsuite_core_base_settings/es_client/servers elasticsearch:9200
+      bin/magento config:set -le smile_elasticsuite_core_base_settings/es_client/enable_https_mode 0
+      bin/magento config:set -le smile_elasticsuite_core_base_settings/es_client/enable_http_auth 0
+      bin/magento config:set -le smile_elasticsuite_core_base_settings/es_client/http_auth_user ""
+      bin/magento config:set -le smile_elasticsuite_core_base_settings/es_client/http_auth_pwd ""
+      bin/magento app:config:import
+    4)bin/magento c:f
+    5)bin/magento indexer:reindex
+Итог :
+    в /Users/imac/Sites/shellpea/cloak2-docker/src/app/etc/env.php добавились строки :
+    'system' => [
+            'default' => [
+                'smile_elasticsuite_core_base_settings' => [
+                    'es_client' => [
+                        'servers' => 'elasticsearch:9200',
+                        'enable_https_mode' => '0',
+                        'enable_http_auth' => '0',
+                        'http_auth_user' => '',
+                        'http_auth_pwd' => ''
+                    ]
+                ]
+            ]
+        ]
