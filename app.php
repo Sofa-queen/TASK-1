@@ -1,7 +1,11 @@
 <?php
-namespace php_docker;
-use php_docker\EmptyException;
-use php_docker\app\ReadFileFactory;
+require 'vendor/autoload.php';
+use App\Classes\MyException\EmptyException;
+use App\Classes\MyException\ObjException;
+use App\Classes\ReadFileFactory;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+$output = new ConsoleOutput();
 
 $obj = ReadFileFactory::createFileContent($argv[1], $argv[2]);
 try {
@@ -10,7 +14,9 @@ try {
 } catch (ObjException $e) {
     echo $e->getMessage() . "!!!\n";
 }catch (EmptyException $e) {
-    echo "The file " . $e->getMessage() . " is empty!!!\n";
+    $output->writeln("<error>The file " . $e->getMessage() . " is empty!!!</error>");
+    //echo "The file " . $e->getMessage() . " is empty!!!\n";
 } catch (\Exception $e) {
-    echo "The file " . $e->getMessage() . " does not exist!!!\n";
+    $output->writeln("<question>The file " . $e->getMessage() . " does not exist!!!</question>");
+    //echo "The file " . $e->getMessage() . " does not exist!!!\n";
 }
